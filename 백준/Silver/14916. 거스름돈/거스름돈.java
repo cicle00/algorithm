@@ -7,19 +7,16 @@ public class Main {
 		int N = sc.nextInt();
 		
 		int result = -1;
-		if(N!=1 && N !=3) {
-		if((N%5)%2 != 0) {
-			result = N/5 - 1;
-			N -= (5*(N/5 - 1));
-		}else {
-			result = N/5;
-			N -= (5*(N/5));
-		}
 		
-		result += N/2;
+		for(int five=N/5;five>=0;five--) {
+			int remainder = N - (5*five);
+			if(remainder%2==0) {
+				int two = remainder/2;
+				result = two + five;
+				break;
+			}
 		}
 		
 		System.out.println(result);
 	}	
 }
-
