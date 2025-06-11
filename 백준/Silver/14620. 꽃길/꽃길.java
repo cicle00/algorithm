@@ -5,7 +5,11 @@ public class Main {
 	static int N;
 	static int[][] garden;
 	static int[][] fee;
+	static boolean[][] visited;
 	static int min = Integer.MAX_VALUE;
+	
+	static int[] dx = {0, 0, 0, -1, 1};
+    static int[] dy = {0, -1, 1, 0, 0};
 	
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,71 +31,58 @@ public class Main {
         	}
         }
         
-        min = minFee(min);
+        visited = new boolean[N][N];
+         minFee();
         
         System.out.println(min);
         
 	}
 
-    private static int minFee(int min) {
-        boolean[][] visited = new boolean[N][N];
-        
-        for (int i = 1; i < N - 1; i++) {
-            for (int j = 1; j < N - 1; j++) {
-                for (int x = 1; x < N - 1; x++) {
-                    for (int y = 1; y < N - 1; y++) {
-                        for (int a = 1; a < N - 1; a++) {
-                            for (int b = 1; b < N - 1; b++) {
-                                int[][] pos = {{i, j}, {x, y}, {a, b}};
-                                if (isValid(pos)) {
-                                    int cost = getCost(pos);
-                                    min = Math.min(min, cost);
-                                }
+    private static void minFee() {
+        int size = N - 2;
+        for (int i1 = 0; i1 < size; i1++) {
+            for (int j1 = 0; j1 < size; j1++) {
+                if (!canPlace(i1 + 1, j1 + 1)) continue;
+                mark(i1 + 1, j1 + 1, true); // 꽃1
+
+                for (int i2 = 0; i2 < size; i2++) {
+                    for (int j2 = 0; j2 < size; j2++) {
+                        if (!canPlace(i2 + 1, j2 + 1)) continue;
+                        mark(i2 + 1, j2 + 1, true); 
+                        
+                        for (int i3 = 0; i3 < size; i3++) {
+                            for (int j3 = 0; j3 < size; j3++) {
+                                if (!canPlace(i3 + 1, j3 + 1)) continue;
+
+                                int cost = fee[i1][j1] + fee[i2][j2] + fee[i3][j3];
+                                min = Math.min(min, cost);
                             }
                         }
+
+                        mark(i2 + 1, j2 + 1, false); 
                     }
                 }
+
+                mark(i1 + 1, j1 + 1, false); 
             }
         }
-        
-        return min;
     }
-    
-    private static boolean isValid(int[][] centers) {
-        boolean[][] tempVisited = new boolean[N][N];
-        
-        for (int[] center : centers) {
-            int x = center[0], y = center[1];
-            int[] dx = {0, 0, 0, -1, 1};
-            int[] dy = {0, -1, 1, 0, 0};
-            
-            for (int k = 0; k < 5; k++) {
-                int nx = x + dx[k];
-                int ny = y + dy[k];
-                
-                if (tempVisited[nx][ny]) return false;
-                tempVisited[nx][ny] = true;
-            }
+
+    private static boolean canPlace(int x, int y) {
+        for (int k = 0; k < 5; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            if (visited[nx][ny]) return false;
         }
-        
         return true;
     }
 
-    private static int getCost(int[][] centers) {
-        int sum = 0;
-        for (int[] center : centers) {
-            int x = center[0], y = center[1];
-            int[] dx = {0, 0, 0, -1, 1};
-            int[] dy = {0, -1, 1, 0, 0};
-            
-            for (int k = 0; k < 5; k++) {
-                int nx = x + dx[k];
-                int ny = y + dy[k];
-                sum += garden[nx][ny];
-            }
+    private static void mark(int x, int y, boolean flag) {
+        for (int k = 0; k < 5; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            visited[nx][ny] = flag;
         }
-        return sum;
     }
-
 
 }
