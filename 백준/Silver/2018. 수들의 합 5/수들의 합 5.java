@@ -1,27 +1,33 @@
+import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
         int N = sc.nextInt();
-
-        int result = 0;
-
-        for (int i = 1; i <= N; i++) { 
-            int sum = 0;
-
-            for (int j = i; j <= N; j++) { 
-                sum += j;
-
-                if (sum == N) {
-                    result++;
-                    break;
-                } else if (sum > N) {
-                    break;
-                }
-            }
+        
+        int result = 1;
+        
+        int start = 1;
+        int end = 1;
+        int sum = 1;
+        
+        while(end != N) {
+        	if(sum<N) {
+        		end++;
+        		sum += end;
+        	} else if(sum>N) {
+        		sum -= start;
+        		start++;
+        	} else {
+        		result++;
+        		end++;
+        		sum += end;
+        	}
         }
-
+        
         System.out.println(result);
-    }
+        
+    
+	}
 }
